@@ -14,8 +14,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.esig.selecao.enums.Role;
-import com.esig.selecao.model.User;
+import com.esig.selecao.enums.Cargo;
+import com.esig.selecao.model.Usuario;
 
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +54,7 @@ public class UserAuthProvider {
      * @param user Usuário que requisitou a geração do token
      * @return Token JWS com informações sobre a sessão do usuário
      */
-    public String generateToken(User user){
+    public String generateToken(Usuario user){
         Date now = new Date();
         Date expire = new Date(now.getTime() + 3_600_000);  //Uma hora para o token expirar
 
@@ -62,9 +62,9 @@ public class UserAuthProvider {
         .withIssuer(user.getLogin())                        // iss: issuer que é o emissor;
         .withIssuedAt(now)                                  // iat: issued at que é a data de início de validade; 
         .withExpiresAt(expire)                              // exp: expiration time que é o tempo de expiração;
-        .withClaim("firstName", user.getFirstName())   // Payload: informações sobre autenticação e autorização que queremos transmitir através das requisições;
-        .withClaim("lastName", user.getLastName())
-        .withClaim("role", user.getRole().name())
+        .withClaim("primeiroNome", user.getPrimeiroNome())   // Payload: informações sobre autenticação e autorização que queremos transmitir através das requisições;
+        .withClaim("sobrenome", user.getSobrenome())
+        .withClaim("cargo", user.getCargo().name())
         .sign(Algorithm.HMAC256(secretKey));                // Assinatura: última etapa, informa o algoritmo de codificação, usa as informações anteriores + a secret key
     }
 
@@ -79,11 +79,11 @@ public class UserAuthProvider {
         JWTVerifier verifier = JWT.require(algorithm).build();
         DecodedJWT decoded = verifier.verify(token);
 
-        UserDetails userDetails = User.builder()
+        UserDetails userDetails = Usuario.builder()
                     .login(decoded.getIssuer())
-                    .firstName(decoded.getClaim("firstName").asString())
-                    .lastName(decoded.getClaim("lastName").asString())
-                    .role(decoded.getClaim("role").as(Role.class))
+                    .primeiroNome(decoded.getClaim("primeiroNome").asString())
+                    .sobrenome(decoded.getClaim("sobrenome").asString())
+                    .cargo(decoded.getClaim("cargo").as(Cargo.class))
                     .build();
 
         System.out.println("Token validado, usuário: " + userDetails);

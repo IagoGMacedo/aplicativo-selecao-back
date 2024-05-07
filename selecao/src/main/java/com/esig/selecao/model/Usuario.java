@@ -2,19 +2,23 @@ package com.esig.selecao.model;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.esig.selecao.enums.Role;
+import com.esig.selecao.enums.Cargo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,32 +31,36 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name = "api_user")
-public class User implements UserDetails{
+public class Usuario implements UserDetails{
     @Id
     @GeneratedValue
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "user_first_name", nullable = false)
-    private String firstName;
+    @Column(nullable = false)
+    private String primeiroNome;
 
-    @Column(name = "user_last_name", nullable = false)
-    private String lastName;
+    @Column(nullable = false)
+    private String sobrenome;
 
-    @Column(name = "user_login", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String login;
 
-    @Column(name = "user_password", nullable = false)
-    private String password;
+    @Column(nullable = false)
+    private String senha;
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Cargo cargo;
 
     private String token;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "usuario", fetch = FetchType.EAGER)
+    private Set<Tarefa> tarefas;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + cargo.name()));
     }
 
     @Override
@@ -60,6 +68,8 @@ public class User implements UserDetails{
         return this.login;
     }
 
+    
+    //propriedades do Spring Security
     @Override
     public boolean isAccountNonExpired() {
         return true;
@@ -78,5 +88,10 @@ public class User implements UserDetails{
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
     }
 }

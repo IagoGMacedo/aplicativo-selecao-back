@@ -14,7 +14,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.esig.selecao.repository.IUserRepository;
+import com.esig.selecao.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,7 +22,8 @@ import lombok.RequiredArgsConstructor;
 @EnableWebMvc
 @RequiredArgsConstructor
 public class WebConfig {
-    private final IUserRepository userRepository;
+    //private final IUserRepository userRepository;
+    private final UsuarioRepository userRepository;
 
     /**
      * Bean de configuração do CORS (Cross-origin Resource sharing ou Compartilhamento de recursos com origens diferentes)

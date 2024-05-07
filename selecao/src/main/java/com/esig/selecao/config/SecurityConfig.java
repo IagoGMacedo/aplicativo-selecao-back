@@ -17,7 +17,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
-import com.esig.selecao.enums.Role;
+import com.esig.selecao.enums.Cargo;
 
 @RequiredArgsConstructor
 @Configuration
@@ -60,11 +60,30 @@ public class SecurityConfig {
                                 new AntPathRequestMatcher("/h2-console/**")) // OBS: o h2 tem que ser através do
                                                                                      // antmatcher
                         .permitAll()
-                        .requestMatchers(mvc.pattern(HttpMethod.GET, "api/hemogram**"))
-                        .hasAnyRole(Role.PATIENT.name(), Role.PROFESSIONAL.name())
-                        .requestMatchers(mvc.pattern(HttpMethod.POST, "api/hemogram**"))
-                        .hasRole(Role.PROFESSIONAL.name())
-                        .requestMatchers(mvc.pattern("/update-user**")).hasRole(Role.ADMIN.name())
+                        .requestMatchers(mvc.pattern(HttpMethod.GET, "api/tarefas**"))
+                        .hasAnyRole(Cargo.COMUM.name(), Cargo.ADMIN.name())
+                        .requestMatchers(mvc.pattern(HttpMethod.POST, "api/tarefas**"))
+                        .hasAnyRole(Cargo.COMUM.name(), Cargo.ADMIN.name())
+                        .requestMatchers(mvc.pattern(HttpMethod.DELETE, "api/tarefas**"))
+                        .hasAnyRole(Cargo.COMUM.name(), Cargo.ADMIN.name())
+                        .requestMatchers(mvc.pattern(HttpMethod.PATCH, "api/tarefas**"))
+                        .hasAnyRole(Cargo.COMUM.name(), Cargo.ADMIN.name())
+                        .requestMatchers(mvc.pattern(HttpMethod.GET, "api/usuarios**"))
+                        .hasRole(Cargo.ADMIN.name())
+                        .requestMatchers(mvc.pattern(HttpMethod.POST, "api/usuarios**"))
+                        .hasRole(Cargo.ADMIN.name())
+                        .requestMatchers(mvc.pattern(HttpMethod.DELETE, "api/usuarios**"))
+                        .hasRole(Cargo.ADMIN.name())
+                        .requestMatchers(mvc.pattern(HttpMethod.PATCH, "api/usuarios**"))
+                        .hasRole(Cargo.ADMIN.name())
+
+                        /* 
+                        .requestMatchers(mvc.pattern(HttpMethod.GET, "api/hemograma**"))
+                        .hasAnyRole(Cargo.COMUM.name())
+                        .requestMatchers(mvc.pattern(HttpMethod.POST, "api/hemograma**"))
+                        .hasRole(Cargo.COMUM.name())
+                        */
+                        .requestMatchers(mvc.pattern("/update-user**")).hasRole(Cargo.ADMIN.name())
                         .anyRequest().authenticated());
         return http.build();
     }

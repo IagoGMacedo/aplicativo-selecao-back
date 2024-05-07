@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class SignUpDTO {
-    private String firstName; 
-    private String lastName; 
+    private String primeiroNome; 
+    private String sobrenome; 
     private String login; 
-    private String password;
+    private String senha;
     
 }

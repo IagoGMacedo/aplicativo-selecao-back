@@ -1,6 +1,6 @@
 package com.esig.selecao.rest.dto.authentication;
 
-import com.esig.selecao.enums.Role;
+import com.esig.selecao.enums.Cargo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserDTO {
-    private String firstName;
-    private String lastName;
+    private String primeiroNome;
+    private String sobrenome;
     private String login;
-    private Role role;
+    private Cargo cargo;
     private String token;
 }

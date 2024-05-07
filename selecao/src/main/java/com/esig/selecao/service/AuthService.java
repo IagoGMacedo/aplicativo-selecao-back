@@ -14,16 +14,17 @@ import com.esig.selecao.rest.dto.authentication.CredentialDTO;
 import com.esig.selecao.rest.dto.authentication.SignUpDTO;
 import com.esig.selecao.exception.AppException;
 import com.esig.selecao.config.PasswordConfig;
-import com.esig.selecao.enums.Role;
-import com.esig.selecao.model.User;
-import com.esig.selecao.repository.IUserRepository;
+import com.esig.selecao.enums.Cargo;
+import com.esig.selecao.model.Usuario;
+import com.esig.selecao.repository.UsuarioRepository;
 
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
-    private final IUserRepository userRepository;
+public class AuthService {
+    //private final IUserRepository userRepository;
+    private final UsuarioRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     /**
@@ -33,11 +34,11 @@ public class UserService {
      * @param credentialDTO Credenciais contendo login e senha
      * @return User do usuário encontrado
      */
-    public User login(CredentialDTO credentialDTO) throws AppException {
-        User user = userRepository.findByLogin(credentialDTO.login())
+    public Usuario login(CredentialDTO credentialDTO) throws AppException {
+        Usuario user = userRepository.findByLogin(credentialDTO.login())
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
-        if (passwordEncoder.matches(credentialDTO.password(), user.getPassword())) {
+        if (passwordEncoder.matches(credentialDTO.senha(), user.getSenha())) {
             System.out.println("deu matches");
             return user;
         }
@@ -52,25 +53,25 @@ public class UserService {
      *                  usuário
      * @return User do usuário criado
      */
-    public User register(SignUpDTO signUpDTO) throws AppException {
-        Optional<User> oUser = userRepository.findByLogin(signUpDTO.getLogin());
+    public Usuario register(SignUpDTO signUpDTO) throws AppException {
+        Optional<Usuario> oUser = userRepository.findByLogin(signUpDTO.getLogin());
 
         if (oUser.isPresent()) {
             throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
         }
 
-        User user = extractUser(signUpDTO);
-        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(signUpDTO.getPassword())));
-        user.setRole(Role.ADMIN);
-        User savedUser = userRepository.save(user);
+        Usuario user = extractUser(signUpDTO);
+        user.setSenha(passwordEncoder.encode(CharBuffer.wrap(signUpDTO.getSenha())));
+        user.setCargo(Cargo.ADMIN);
+        Usuario savedUser = userRepository.save(user);
         System.out.println("encode ok");
         return savedUser;
     }
 
-    private User extractUser(SignUpDTO signUpDTO) {
-        User user = new User();
-        user.setFirstName(signUpDTO.getFirstName());
-        user.setLastName(signUpDTO.getLastName());
+    private Usuario extractUser(SignUpDTO signUpDTO) {
+        Usuario user = new Usuario();
+        user.setPrimeiroNome(signUpDTO.getPrimeiroNome());
+        user.setSobrenome(signUpDTO.getSobrenome());
         user.setLogin(signUpDTO.getLogin());
         return user;
     }
