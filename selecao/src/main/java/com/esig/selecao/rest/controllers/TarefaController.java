@@ -2,12 +2,12 @@ package com.esig.selecao.rest.controllers;
 
 import java.util.List;
 
+import java.util.Collections;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,13 +18,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.CollectionUtils;
 import com.esig.selecao.exception.AppException;
 import com.esig.selecao.model.Tarefa;
-import com.esig.selecao.model.Usuario;
 import com.esig.selecao.rest.dto.AlteracaoUsuarioDTO;
 import com.esig.selecao.rest.dto.TarefaDTO;
+import com.esig.selecao.rest.dto.TarefaRetornoDTO;
 import com.esig.selecao.service.TarefaService;
 import com.esig.selecao.utils.Patcher;
+import java.util.stream.Collectors;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,23 +43,20 @@ public class TarefaController {
     private Patcher patcher;
 
     @GetMapping("{id}")
-    public Tarefa getTarefaById(@PathVariable Integer id) {
-        return tarefaService
-                .encontrarPeloId(id)
-                .orElseThrow(() -> // se nao achar lança o erro!
-                new AppException("Unknown task", HttpStatus.NOT_FOUND));
+    public ResponseEntity<TarefaRetornoDTO> getTarefaById(@PathVariable Integer id) {
+        Tarefa tarefa = tarefaService
+            .encontrarPeloId(id)
+            .orElseThrow(() -> // se nao achar lança o erro!
+            new AppException("Unknown task", HttpStatus.NOT_FOUND));
+
+        return ResponseEntity.ok(toDto(tarefa));
     }
-    /* 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Tarefa save(@RequestBody TarefaDTO tarefa, @AuthenticationPrincipal Usuario user) {
-        return tarefaService.salvar(tarefa);
-    }
-    */
+
+    
 
     @PostMapping
-    public ResponseEntity<Tarefa> save(@RequestBody TarefaDTO tarefa) {
-        return new ResponseEntity<Tarefa>(tarefaService.salvar(tarefa), HttpStatus.CREATED);
+    public ResponseEntity<TarefaRetornoDTO> save(@RequestBody TarefaDTO tarefa) {
+        return new ResponseEntity<TarefaRetornoDTO>(toDto(tarefaService.salvar(tarefa)), HttpStatus.CREATED);
     }
 
     @DeleteMapping("{id}")
@@ -98,7 +98,7 @@ public class TarefaController {
     }
 
     @GetMapping
-    public List<Tarefa> find(Tarefa filtro) {
+    public List<TarefaRetornoDTO> find(Tarefa filtro) {
         ExampleMatcher matcher = ExampleMatcher
                 .matching()
                 .withIgnoreCase()
@@ -106,10 +106,12 @@ public class TarefaController {
                         ExampleMatcher.StringMatcher.CONTAINING);
 
         Example example = Example.of(filtro, matcher);
-        return tarefaService.encontrarTodos(example);
+        List<Tarefa> listaTarefas = tarefaService.encontrarTodos(example);
+
+        return toDtoList(listaTarefas);
+
     }
 
-     
     @PatchMapping("/alterarUsuario")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateUsuarioTarefa(@RequestBody AlteracaoUsuarioDTO dto){
@@ -117,13 +119,38 @@ public class TarefaController {
     }
 
     @GetMapping("/consultarTarefas/{id}")
-    public List<Tarefa> consultasTarefasUsuario(@PathVariable Integer id){
-        return tarefaService.consultarTarefasUsuario(id);
+    public List<TarefaRetornoDTO> consultasTarefasUsuario(@PathVariable Integer id){
+        return toDtoList(tarefaService.consultarTarefasUsuario(id));
     }
 
-    
+    private TarefaRetornoDTO toDto(Tarefa tarefa) {
+        return TarefaRetornoDTO.builder()
+        .id(tarefa.getId())
+        .titulo(tarefa.getTitulo())
+        .descricao(tarefa.getDescricao())
+        .usuario(tarefa.getUsuario().getPrimeiroNome())
+        .prioridade(tarefa.getPrioridade())
+        .situacao(tarefa.getSituacao())
+        .deadLine(tarefa.getDeadLine().toString())
+        .build();
+    }
 
-    
-    
+    private List<TarefaRetornoDTO> toDtoList(List<Tarefa> listaTarefas) {
+        if(CollectionUtils.isEmpty(listaTarefas)){
+            return Collections.emptyList();
+        }
+        return listaTarefas.stream().map(
+                tarefa -> TarefaRetornoDTO
+                    .builder()
+                    .id(tarefa.getId())
+                    .titulo(tarefa.getTitulo())
+                    .descricao(tarefa.getDescricao())
+                    .usuario(tarefa.getUsuario().getPrimeiroNome())
+                    .prioridade(tarefa.getPrioridade())
+                    .situacao(tarefa.getSituacao())
+                    .deadLine(tarefa.getDeadLine().toString())
+                    .build()
+        ).collect(Collectors.toList());
+    }
 
 }
