@@ -18,7 +18,7 @@ public class TarefaDTO {
     private Integer id;
     private String titulo;
     private String descricao;
-    private String usuario;
+    private Long usuario;
     private Prioridade prioridade; 
     private Situacao situacao;
     private String deadLine;

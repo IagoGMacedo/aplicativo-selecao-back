@@ -46,7 +46,7 @@ public class TarefaServiceImpl implements TarefaService {
     @Override
     public TarefaDTO salvar(TarefaDTO tarefaDTO) {
         System.out.println("entrou no método salvar tarefa");
-        Integer idUsuario = Integer.parseInt(tarefaDTO.getUsuario());
+        Long idUsuario = tarefaDTO.getUsuario();
         Usuario usuario = usuarioRepository
                 .findById(idUsuario)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
@@ -121,7 +121,7 @@ public class TarefaServiceImpl implements TarefaService {
                 .id(tarefa.getId())
                 .titulo(tarefa.getTitulo())
                 .descricao(tarefa.getDescricao())
-                .usuario(tarefa.getUsuario().getPrimeiroNome())
+                .usuario(tarefa.getUsuario().getId())
                 .prioridade(tarefa.getPrioridade())
                 .situacao(tarefa.getSituacao())
                 .deadLine(tarefa.getDeadLine().toString())
@@ -138,7 +138,7 @@ public class TarefaServiceImpl implements TarefaService {
                         .id(tarefa.getId())
                         .titulo(tarefa.getTitulo())
                         .descricao(tarefa.getDescricao())
-                        .usuario(tarefa.getUsuario().getPrimeiroNome())
+                        .usuario(tarefa.getUsuario().getId())
                         .prioridade(tarefa.getPrioridade())
                         .situacao(tarefa.getSituacao())
                         .deadLine(tarefa.getDeadLine().toString())
@@ -155,7 +155,7 @@ public class TarefaServiceImpl implements TarefaService {
     private Tarefa extractTarefa(TarefaDTO tarefaIncompletaDto) {
         Tarefa tarefa = new Tarefa();
         if (tarefaIncompletaDto.getUsuario() != null) {
-            Integer idUsuario = Integer.parseInt(tarefaIncompletaDto.getUsuario());
+            Long idUsuario = tarefaIncompletaDto.getUsuario();
             Usuario usuario = usuarioRepository
                     .findById(idUsuario)
                     .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));

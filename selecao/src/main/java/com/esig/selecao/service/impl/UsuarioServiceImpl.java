@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import com.esig.selecao.exception.AppException;
 import com.esig.selecao.model.Usuario;
 import com.esig.selecao.repository.UsuarioRepository;
+import com.esig.selecao.rest.dto.UsuarioValorDTO;
 import com.esig.selecao.rest.dto.authentication.UsuarioDTO;
 import com.esig.selecao.service.UsuarioService;
 import com.esig.selecao.utils.Patcher;
@@ -28,7 +29,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     private final Patcher patcher;
 
     @Override
-    public UsuarioDTO encontrarPeloId(Integer id) {
+    public UsuarioDTO encontrarPeloId(Long id) {
         Usuario usuario = repository.findById(id)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
@@ -36,7 +37,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public void deletar(Integer id) {
+    public void deletar(Long id) {
         Usuario usuario = repository
                 .findById(id)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
@@ -56,7 +57,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioDTO patch(Integer id, Usuario usuarioIncompleto) {
+    public UsuarioDTO patch(Long id, Usuario usuarioIncompleto) {
         Usuario usuarioExistente = repository.findById(id)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
@@ -65,13 +66,18 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
     @Override
-    public UsuarioDTO update(Integer id, Usuario usuario) {
+    public UsuarioDTO update(Long id, Usuario usuario) {
         Usuario usuarioExistente = repository
                 .findById(id)
                 .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
 
         usuario.setId(usuarioExistente.getId());
         return toDto(repository.save(usuario));
+    }
+
+    @Override
+    public List<UsuarioValorDTO> encontrarValores() {
+        return toDtoValue(repository.findAll());
     }
 
     private UsuarioDTO toDto(Usuario usuario) {
@@ -98,5 +104,19 @@ public class UsuarioServiceImpl implements UsuarioService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    private List<UsuarioValorDTO> toDtoValue(List<Usuario> listaUsuarios){
+        if (CollectionUtils.isEmpty(listaUsuarios)) {
+            return Collections.emptyList();
+        }
+        return listaUsuarios.stream().map(
+                usuario -> UsuarioValorDTO.builder()
+                        .id(usuario.getId())
+                        .nome(usuario.getNomeCompleto())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+    
 
 }

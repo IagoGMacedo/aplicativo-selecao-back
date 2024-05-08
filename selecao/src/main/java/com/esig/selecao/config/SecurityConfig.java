@@ -57,8 +57,12 @@ public class SecurityConfig {
                 .sessionManagement(customizer -> customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers(mvc.pattern("/login"), mvc.pattern("/register"),
-                                new AntPathRequestMatcher("/h2-console/**")) // OBS: o h2 tem que ser através do
-                                                                                     // antmatcher
+                                new AntPathRequestMatcher("/h2-console/**"),
+                                new AntPathRequestMatcher("/swagger-ui.html**"),
+                                new AntPathRequestMatcher("/v3/api-docs/**"), 
+                                new AntPathRequestMatcher("/swagger-ui/**")) 
+                                
+                                                                                     
                         .permitAll()
                         .requestMatchers(mvc.pattern(HttpMethod.GET, "api/tarefas**"))
                         .hasAnyRole(Cargo.COMUM.name(), Cargo.ADMIN.name())

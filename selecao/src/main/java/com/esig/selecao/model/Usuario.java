@@ -68,6 +68,10 @@ public class Usuario implements UserDetails{
         return this.login;
     }
 
+    public String getNomeCompleto(){
+        return this.primeiroNome+" "+this.sobrenome;
+    }
+
     
     //propriedades do Spring Security
     @Override
