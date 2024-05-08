@@ -3,23 +3,19 @@ package com.esig.selecao.rest.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
-import com.esig.selecao.exception.AppException;
 import com.esig.selecao.model.Usuario;
+import com.esig.selecao.rest.dto.authentication.UsuarioDTO;
 import com.esig.selecao.service.UsuarioService;
 import com.esig.selecao.utils.Patcher;
 
@@ -34,66 +30,31 @@ public class UsuarioController {
     private Patcher patcher;
 
     @GetMapping("{id}")
-    public Usuario getUsuarioById(@PathVariable Integer id) {
-        return usuarioService
-                .encontrarPeloId(id)
-                .orElseThrow(() -> // se nao achar lança o erro!
-                new AppException("Unknown user", HttpStatus.NOT_FOUND));
+    public ResponseEntity<UsuarioDTO> getUsuarioById(@PathVariable Integer id) {
+        return new ResponseEntity<UsuarioDTO>(usuarioService.encontrarPeloId(id), HttpStatus.OK);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Usuario save(@RequestBody Usuario usuario) {
-        return usuarioService.salvar(usuario);
-    }
 
     @DeleteMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Integer id) {
-        usuarioService.encontrarPeloId(id)
-                .map(usuario -> {
-                    usuarioService.deletar(usuario);
-                    return usuario;
-                })
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+    public ResponseEntity<Void> delete(@PathVariable Integer id) {
+        usuarioService.deletar(id);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@PathVariable Integer id,
-            @RequestBody Usuario usuario) {
-        usuarioService
-                .encontrarPeloId(id)
-                .map(usuarioExistente -> {
-                    usuario.setId(usuarioExistente.getId());
-                    usuarioService.salvar(usuario);
-                    return usuarioExistente;
-                }).orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+    public ResponseEntity<UsuarioDTO> update(@PathVariable Integer id, @RequestBody Usuario usuario) {
+        return new ResponseEntity<UsuarioDTO>((usuarioService.update(id, usuario)), HttpStatus.OK);
     }
 
     @PatchMapping("{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void patch(@PathVariable Integer id, @RequestBody Usuario usuarioIncompleto) {
-        usuarioService
-                .encontrarPeloId(id)
-                .map(usuarioExistente -> {
-                    patcher.copiarPropriedadesNaoNulas(usuarioIncompleto, usuarioExistente);
-                    usuarioService.salvar(usuarioExistente);
-                    return usuarioExistente;
-                }).orElseThrow( () ->
-                        new AppException("Unknown user", HttpStatus.NOT_FOUND));
+    public ResponseEntity<UsuarioDTO> patch(@PathVariable Integer id, @RequestBody Usuario usuarioIncompleto) {
+        return new ResponseEntity<UsuarioDTO>((usuarioService.patch(id, usuarioIncompleto)), HttpStatus.OK);
     }
 
     @GetMapping
-    public List<Usuario> find(Usuario filtro) {
-        ExampleMatcher matcher = ExampleMatcher
-                .matching()
-                .withIgnoreCase()
-                .withStringMatcher(
-                        ExampleMatcher.StringMatcher.CONTAINING);
+    public ResponseEntity<List<UsuarioDTO>> find(Usuario filtro) {
+        return new ResponseEntity<List<UsuarioDTO>>((usuarioService.encontrarTodos(filtro)), HttpStatus.OK);
 
-        Example example = Example.of(filtro, matcher);
-        return usuarioService.encontrarTodos(example);
     }
 
 

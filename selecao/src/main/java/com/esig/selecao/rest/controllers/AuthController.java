@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import com.esig.selecao.config.UserAuthProvider;
 import com.esig.selecao.rest.dto.authentication.CredentialDTO;
 import com.esig.selecao.rest.dto.authentication.SignUpDTO;
-import com.esig.selecao.rest.dto.authentication.UserDTO;
+import com.esig.selecao.rest.dto.authentication.UsuarioDTO;
 import com.esig.selecao.enums.Cargo;
 import com.esig.selecao.model.Usuario;
 import com.esig.selecao.service.AuthService;
@@ -25,7 +25,7 @@ public class AuthController {
     private final UserAuthProvider userAuthProvider;
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(@RequestBody CredentialDTO credentialDTO) {
+    public ResponseEntity<UsuarioDTO> login(@RequestBody CredentialDTO credentialDTO) {
         Usuario user = authService.login(credentialDTO);
 
         user.setToken(userAuthProvider.generateToken(user));
@@ -33,18 +33,19 @@ public class AuthController {
         return ResponseEntity.ok(toDto(user));
     }
 
-    private UserDTO toDto(Usuario user) {
-        return UserDTO.builder()
-        .primeiroNome(user.getPrimeiroNome())
-        .sobrenome(user.getSobrenome())
-        .cargo(user.getCargo())
-        .token(user.getToken())
-        .login(user.getLogin())
-        .build();
+    private UsuarioDTO toDto(Usuario user) {
+        return UsuarioDTO.builder()
+                .id(user.getId())
+                .primeiroNome(user.getPrimeiroNome())
+                .sobrenome(user.getSobrenome())
+                .cargo(user.getCargo())
+                .token(user.getToken())
+                .login(user.getLogin())
+                .build();
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> register(@RequestBody SignUpDTO signUpDTO) {
+    public ResponseEntity<UsuarioDTO> register(@RequestBody SignUpDTO signUpDTO) {
         Usuario user = authService.register(signUpDTO);
 
         user.setToken(userAuthProvider.generateToken(user));

@@ -50,7 +50,7 @@ public class TarefaController {
 
     @PatchMapping("{id}")
     public ResponseEntity<TarefaDTO> patch(@PathVariable Integer id, @RequestBody TarefaDTO tarefaIncompletaDTO) {
-        return new ResponseEntity<TarefaDTO>((tarefaService.patchTarefa(id, tarefaIncompletaDTO)), HttpStatus.OK);
+        return new ResponseEntity<TarefaDTO>((tarefaService.patch(id, tarefaIncompletaDTO)), HttpStatus.OK);
     }
 
     @GetMapping
@@ -58,12 +58,9 @@ public class TarefaController {
         return new ResponseEntity<List<TarefaDTO>>((tarefaService.encontrarTodos(filtro)), HttpStatus.OK);
     }
 
-    
     @GetMapping("/consultarTarefas/{id}")
     public ResponseEntity<List<TarefaDTO>> consultasTarefasUsuario(@PathVariable Integer id) {
         return new ResponseEntity<List<TarefaDTO>>((tarefaService.consultarTarefasUsuario(id)), HttpStatus.OK);
     }
-
-    
 
 }

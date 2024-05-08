@@ -20,5 +20,5 @@ public interface TarefaService {
     public TarefaDTO update(Integer id, TarefaDTO tarefa);
     public List<TarefaDTO> encontrarTodos(Tarefa filtro);
     public List<TarefaDTO> consultarTarefasUsuario(Integer id);
-    public TarefaDTO patchTarefa(Integer id, TarefaDTO tarefaIncompletaDto);
+    public TarefaDTO patch(Integer id, TarefaDTO tarefaIncompletaDto);
 }

@@ -92,7 +92,7 @@ public class TarefaServiceImpl implements TarefaService {
     }
 
     @Override
-    public TarefaDTO patchTarefa(Integer id, TarefaDTO tarefaIncompletaDTO) {
+    public TarefaDTO patch(Integer id, TarefaDTO tarefaIncompletaDTO) {
         Tarefa tarefaExistente = repository.findById(id)
                 .orElseThrow(() -> new AppException("Unknown task", HttpStatus.NOT_FOUND));
 
