@@ -48,6 +48,7 @@ public class WebConfig {
         config.setAllowedMethods(Arrays.asList(
             HttpMethod.GET.name(),
             HttpMethod.PUT.name(),
+            HttpMethod.PATCH.name(),
             HttpMethod.POST.name(),
             HttpMethod.DELETE.name(),
             HttpMethod.OPTIONS.name()
