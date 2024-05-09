@@ -24,7 +24,14 @@ public class Mocker implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-       
+        SignUpDTO usuario_admin = new SignUpDTO("admin", "", "admin", "123", "ADMIN");
+        SignUpDTO usuario_testador1 = new SignUpDTO("testador", "esig", "testador1", "123", "COMUM");
+        SignUpDTO usuario_testador2 = new SignUpDTO("testador", "quark", "testador2", "123", "COMUM");
+
+        authService.register(usuario_admin);
+        Usuario user2 = authService.register(usuario_testador1);
+        Usuario user3 = authService.register(usuario_testador2);
+
 
 
 
