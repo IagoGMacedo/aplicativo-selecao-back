@@ -72,6 +72,11 @@ public class SecurityConfig {
                         .hasAnyRole(Cargo.COMUM.name(), Cargo.ADMIN.name())
                         .requestMatchers(mvc.pattern(HttpMethod.PATCH, "api/tarefas**"))
                         .hasAnyRole(Cargo.COMUM.name(), Cargo.ADMIN.name())
+
+
+                        .requestMatchers(mvc.pattern(HttpMethod.GET, "api/usuarios/usuarioValor**"))
+                        .hasAnyRole(Cargo.COMUM.name(), Cargo.ADMIN.name())
+
                         .requestMatchers(mvc.pattern(HttpMethod.GET, "api/usuarios**"))
                         .hasRole(Cargo.ADMIN.name())
                         .requestMatchers(mvc.pattern(HttpMethod.POST, "api/usuarios**"))
@@ -81,12 +86,7 @@ public class SecurityConfig {
                         .requestMatchers(mvc.pattern(HttpMethod.PATCH, "api/usuarios**"))
                         .hasRole(Cargo.ADMIN.name())
 
-                        /* 
-                        .requestMatchers(mvc.pattern(HttpMethod.GET, "api/hemograma**"))
-                        .hasAnyRole(Cargo.COMUM.name())
-                        .requestMatchers(mvc.pattern(HttpMethod.POST, "api/hemograma**"))
-                        .hasRole(Cargo.COMUM.name())
-                        */
+                        
                         .requestMatchers(mvc.pattern("/update-user**")).hasRole(Cargo.ADMIN.name())
                         .anyRequest().authenticated());
         return http.build();

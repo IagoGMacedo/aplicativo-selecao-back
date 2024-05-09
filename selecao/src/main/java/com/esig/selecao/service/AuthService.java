@@ -62,7 +62,7 @@ public class AuthService {
 
         Usuario user = extractUser(signUpDTO);
         user.setSenha(passwordEncoder.encode(CharBuffer.wrap(signUpDTO.getSenha())));
-        user.setCargo(Cargo.ADMIN);
+        user.setCargo(Cargo.valueOf(signUpDTO.getCargo()));
         Usuario savedUser = userRepository.save(user);
         System.out.println("encode ok");
         return savedUser;

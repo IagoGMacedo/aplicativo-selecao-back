@@ -15,5 +15,5 @@ public class SignUpDTO {
     private String sobrenome; 
     private String login; 
     private String senha;
-    
+    private String cargo;
 }
