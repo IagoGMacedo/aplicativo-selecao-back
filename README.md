@@ -8,6 +8,7 @@ foi utilizado Angular 17, Java 17 e Spring 3.2.5.
 ###### c) Os endpoints devem ser em REST
 ###### d) Criar um controle de autenticação por usuário com login e senha e os endpoints devem autenticar através de token JWT.
 ###### e) Utilizar JPA e Hibernate.
+###### g) Documentar a API usando o Swagger.
 
 ###### Estilização com bootstrap.
 
@@ -32,4 +33,4 @@ Usuário Testador 2
 login: testador2
 senha:123
 
-Para cadastrar mais usuários, é possível usar o endpoint "Registrar usuário". Os endpoints estão no arquivo "endpoints" na raiz do projeto.
+Para cadastrar mais usuários, é possível usar o endpoint "Registrar usuário". Os endpoints estão no arquivo "endpoints" na raiz do projeto e também documentados no link http://localhost:8080/swagger-ui/index.html (aplicação precisa estar aberta)
