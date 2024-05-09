@@ -62,7 +62,7 @@ public class WebConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return username -> userRepository.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException("Credenciais não encontradas"));
     }
 
 }

@@ -36,13 +36,12 @@ public class AuthService {
      */
     public Usuario login(CredentialDTO credentialDTO) throws AppException {
         Usuario user = userRepository.findByLogin(credentialDTO.login())
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("credenciais não encontradas", HttpStatus.NOT_FOUND));
 
         if (passwordEncoder.matches(credentialDTO.senha(), user.getSenha())) {
-            System.out.println("deu matches");
             return user;
         }
-        throw new AppException("Unknown user", HttpStatus.BAD_REQUEST);
+        throw new AppException("credenciais não encontradas", HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -57,14 +56,13 @@ public class AuthService {
         Optional<Usuario> oUser = userRepository.findByLogin(signUpDTO.getLogin());
 
         if (oUser.isPresent()) {
-            throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
+            throw new AppException("Login já existe", HttpStatus.BAD_REQUEST);
         }
 
         Usuario user = extractUser(signUpDTO);
         user.setSenha(passwordEncoder.encode(CharBuffer.wrap(signUpDTO.getSenha())));
         user.setCargo(Cargo.valueOf(signUpDTO.getCargo()));
         Usuario savedUser = userRepository.save(user);
-        System.out.println("encode ok");
         return savedUser;
     }
 

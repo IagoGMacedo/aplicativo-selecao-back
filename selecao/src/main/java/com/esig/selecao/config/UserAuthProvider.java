@@ -86,7 +86,6 @@ public class UserAuthProvider {
                     .cargo(decoded.getClaim("cargo").as(Cargo.class))
                     .build();
 
-        System.out.println("Token validado, usuário: " + userDetails);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
@@ -103,7 +102,6 @@ public class UserAuthProvider {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(decoded.getIssuer());
 
-        System.out.println("Usuário encontrado e token validado, usuário: " + userDetails);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 }

@@ -39,17 +39,16 @@ public class TarefaServiceImpl implements TarefaService {
     @Override
     public TarefaDTO encontrarPeloId(Integer id) {
         Tarefa tarefa = repository.findById(id)
-                .orElseThrow(() -> new AppException("Unknown task", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
         return toDto(tarefa);
     }
 
     @Override
     public TarefaDTO salvar(TarefaDTO tarefaDTO) {
-        System.out.println("entrou no método salvar tarefa");
         Long idUsuario = tarefaDTO.getUsuario();
         Usuario usuario = usuarioRepository
                 .findById(idUsuario)
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
         Tarefa novaTarefa = new Tarefa();
         novaTarefa.setTitulo(tarefaDTO.getTitulo());
@@ -65,7 +64,7 @@ public class TarefaServiceImpl implements TarefaService {
     public void deletar(Integer id) {
         Tarefa tarefa = repository
                 .findById(id)
-                .orElseThrow(() -> new AppException("Unknown task", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
         repository.delete(tarefa);
     }
 
@@ -94,7 +93,7 @@ public class TarefaServiceImpl implements TarefaService {
     @Override
     public TarefaDTO patch(Integer id, TarefaDTO tarefaIncompletaDTO) {
         Tarefa tarefaExistente = repository.findById(id)
-                .orElseThrow(() -> new AppException("Unknown task", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
 
         Tarefa tarefaIncompleta = extractTarefa(tarefaIncompletaDTO);
 
@@ -107,7 +106,7 @@ public class TarefaServiceImpl implements TarefaService {
     public TarefaDTO update(Integer id, TarefaDTO tarefa) {
         Tarefa tarefaExistente = repository
                 .findById(id)
-                .orElseThrow(() -> new AppException("Unknown task", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Tarefa não encontrada", HttpStatus.NOT_FOUND));
 
         Tarefa novaTarefa = extractTarefa(tarefa);
         novaTarefa.setId(tarefaExistente.getId());
@@ -160,7 +159,7 @@ public class TarefaServiceImpl implements TarefaService {
             Long idUsuario = tarefaIncompletaDto.getUsuario();
             Usuario usuario = usuarioRepository
                     .findById(idUsuario)
-                    .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+                    .orElseThrow(() -> new AppException("Usuário não encontrado", HttpStatus.NOT_FOUND));
             tarefa.setUsuario(usuario);
         }
         tarefa.setTitulo(tarefaIncompletaDto.getTitulo());

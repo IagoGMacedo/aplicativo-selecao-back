@@ -31,7 +31,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public UsuarioDTO encontrarPeloId(Long id) {
         Usuario usuario = repository.findById(id)
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
         return toDto(usuario);
     }
@@ -40,7 +40,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public void deletar(Long id) {
         Usuario usuario = repository
                 .findById(id)
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Usuário não encontrado", HttpStatus.NOT_FOUND));
         repository.delete(usuario);
     }
 
@@ -59,7 +59,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     @Override
     public UsuarioDTO patch(Long id, Usuario usuarioIncompleto) {
         Usuario usuarioExistente = repository.findById(id)
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
         patcher.copiarPropriedadesNaoNulas(usuarioIncompleto, usuarioExistente);
         return toDto(repository.save(usuarioExistente));
@@ -69,7 +69,7 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioDTO update(Long id, Usuario usuario) {
         Usuario usuarioExistente = repository
                 .findById(id)
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+                .orElseThrow(() -> new AppException("Usuário não encontrado", HttpStatus.NOT_FOUND));
 
         usuario.setId(usuarioExistente.getId());
         return toDto(repository.save(usuario));
